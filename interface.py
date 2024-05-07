@@ -7,15 +7,10 @@ GAME_HEIGHT = 900
 GAME_WIDTH = 900
 GAME_SIZE = 50
 SNAKE_LENGTH = 3
-<<<<<<< Updated upstream
 SNAKE_SPEED = 120
 SNAKE_COLOR = "green"
 
 current_direction = "right"
-=======
-
-current_direction = "left"
->>>>>>> Stashed changes
 
 
 root = tk.Tk()
@@ -60,90 +55,6 @@ def instructions():
      
     
     
-<<<<<<< Updated upstream
-=======
-def create_canvas():
-    clear_screen(root)
-    canvas.pack()
-    create_initial_snake()
-    print(snake_coordinates)
-    
-    
-def create_initial_snake():
-    global snake_coordinates
-    snake_coordinates = []
-    counter = 0
-    x = 0
-    y = (GAME_HEIGHT/2)
-    
-    while counter < SNAKE_LENGTH:
-        snake_coordinates.insert(0, [x, y])
-        canvas.create_rectangle(x, y, x+ GAME_SIZE, y + GAME_SIZE, fill = "green")
-        x += GAME_SIZE
-        counter += 1
-        
-        
-def print_snake():
-    canvas.delete("all")
-    for i in snake_coordinates:
-        x = i[0]
-        y = i[1]
-        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
-        
-    
-def snake_move(dir):
-    x = snake_coordinates[0][0]
-    y = snake_coordinates[0][1]
-
-    if dir == "right":
-        x += GAME_SIZE
-        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
-
-        snake_coordinates.insert(0, [x, y])
-        
-        snake_coordinates.pop()
-        print_snake()
-        
-    elif dir == "down":
-        y += GAME_SIZE
-        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
-
-        snake_coordinates.insert(0, [x, y])
-        
-        snake_coordinates.pop()
-        print_snake()
-        
-        
-    elif dir == "up":
-        y -= GAME_SIZE
-        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
-
-        snake_coordinates.insert(0, [x, y])
-        
-        snake_coordinates.pop()
-        print_snake()
-        
-    elif dir == "left":
-        x -= GAME_SIZE
-        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
-
-        snake_coordinates.insert(0, [x, y])
-        
-        snake_coordinates.pop()
-        print_snake()
-        
-
-
-
-root.bind('<Right>', lambda event: snake_move('right'))
-root.bind('<Left>', lambda event: snake_move('left'))
-root.bind('<Up>', lambda event: snake_move('up'))
-root.bind('<Down>', lambda event: snake_move('down'))
-
-
-
-
->>>>>>> Stashed changes
 def main():
     clear_screen(root)
     canvas.pack()
@@ -174,7 +85,6 @@ def print_snake():
         canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
 
 
-<<<<<<< Updated upstream
 def move_snake():
     global current_direction
     snake_move(current_direction)
@@ -237,6 +147,4 @@ root.bind('<Down>', lambda event: snake_move('down'))
 
 first_page()
 
-=======
->>>>>>> Stashed changes
 root.mainloop()
