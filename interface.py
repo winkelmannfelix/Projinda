@@ -6,6 +6,9 @@ TEXTCOLOR = "white"
 GAME_HEIGHT = 900
 GAME_WIDTH = 900
 GAME_SIZE = 50
+SNAKE_LENGTH = 3
+
+current_direction = "left"
 
 
 root = tk.Tk()
@@ -13,7 +16,8 @@ root.title("Snake Game")
 root.geometry(f"{GAME_HEIGHT}x{GAME_WIDTH}")
 root.configure(bg=BACKGROUND)
 
-
+canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
+canvas.pack()
 
 def clear_screen(container):
     for widget in container.pack_slaves():
@@ -49,14 +53,85 @@ def instructions():
      
     
     
-	
 def create_canvas():
     clear_screen(root)
-    canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
     canvas.pack()
-    canvas.create_oval(0, 0, 50, 50, fill="red")
-    canvas.create_rectangle(850, 0, 900, 50, fill = "green")
+    create_initial_snake()
+    print(snake_coordinates)
     
+    
+def create_initial_snake():
+    global snake_coordinates
+    snake_coordinates = []
+    counter = 0
+    x = 0
+    y = (GAME_HEIGHT/2)
+    
+    while counter < SNAKE_LENGTH:
+        snake_coordinates.insert(0, [x, y])
+        canvas.create_rectangle(x, y, x+ GAME_SIZE, y + GAME_SIZE, fill = "green")
+        x += GAME_SIZE
+        counter += 1
+        
+        
+def print_snake():
+    canvas.delete("all")
+    for i in snake_coordinates:
+        x = i[0]
+        y = i[1]
+        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+        
+    
+def snake_move(dir):
+    x = snake_coordinates[0][0]
+    y = snake_coordinates[0][1]
+
+    if dir == "right":
+        x += GAME_SIZE
+        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+
+        snake_coordinates.insert(0, [x, y])
+        
+        snake_coordinates.pop()
+        print_snake()
+        
+    elif dir == "down":
+        y += GAME_SIZE
+        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+
+        snake_coordinates.insert(0, [x, y])
+        
+        snake_coordinates.pop()
+        print_snake()
+        
+        
+    elif dir == "up":
+        y -= GAME_SIZE
+        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+
+        snake_coordinates.insert(0, [x, y])
+        
+        snake_coordinates.pop()
+        print_snake()
+        
+    elif dir == "left":
+        x -= GAME_SIZE
+        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+
+        snake_coordinates.insert(0, [x, y])
+        
+        snake_coordinates.pop()
+        print_snake()
+        
+
+
+
+root.bind('<Right>', lambda event: snake_move('right'))
+root.bind('<Left>', lambda event: snake_move('left'))
+root.bind('<Up>', lambda event: snake_move('up'))
+root.bind('<Down>', lambda event: snake_move('down'))
+
+
 
 
 def main():
