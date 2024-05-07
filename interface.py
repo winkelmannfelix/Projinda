@@ -11,6 +11,7 @@ SNAKE_SPEED = 120
 SNAKE_COLOR = "green"
 
 current_direction = "right"
+snake_move_setup = None
 
 
 root = tk.Tk()
@@ -27,7 +28,7 @@ def clear_screen(container):
         
 
 def first_page():
-    global welcome_text, button, instructions
+    global welcome_text, button, instructions, current_direction, snake_coordinates
     clear_screen(root)
     welcome_text = tk.Label(root, text="\nWELCOME TO THE SNAKE GAME \n", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR)
     welcome_text.pack()
@@ -56,10 +57,34 @@ def instructions():
     
     
 def main():
+    global snake_move_setup
     clear_screen(root)
     canvas.pack()
+    if snake_move_setup is not None:
+            root.after_cancel(snake_move_setup)
+            snake_move_setup = None
     create_initial_snake()
     move_snake()
+
+def restart_game():
+        global current_direction, snake_coordinates, snake_move_setup
+
+        if snake_move_setup is not None:
+            root.after_cancel(snake_move_setup)
+            snake_move_setup = None
+
+        current_direction = "right"  
+        clear_screen(root) 
+        canvas.pack()  
+        create_initial_snake() 
+        move_snake()
+
+def game_over():
+        clear_screen(root)
+        over_text = tk.Label(root, text="Game Over!", font="Times 32", bg=BACKGROUND, fg=TEXTCOLOR)
+        over_text.pack()
+        restart_button = tk.Button(root, text="Restart Game", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=restart_game)
+        restart_button.pack()
     
  
     
@@ -86,9 +111,9 @@ def print_snake():
 
 
 def move_snake():
-    global current_direction
+    global current_direction, snake_move_setup
     snake_move(current_direction)
-    root.after(SNAKE_SPEED, move_snake)
+    snake_move_setup = root.after(SNAKE_SPEED, move_snake)
   
     
 def snake_move(dir):
@@ -132,8 +157,14 @@ def snake_move(dir):
             
             snake_coordinates.pop()
             current_direction = "left"
+
+    if x < 0 or x >= GAME_WIDTH or y < 0 or y >= GAME_HEIGHT:
+        game_over()
+        return
     
     print_snake()
+
+
         
 
 
