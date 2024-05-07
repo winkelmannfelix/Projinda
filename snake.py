@@ -1,6 +1,9 @@
 import tkinter as tk
+import PIL
 from tkinter import *
-from customtkinter import *
+from PIL import Image, ImageTk
+
+
 
 BACKGROUND = "black"
 TEXTCOLOR = "white"
@@ -40,6 +43,9 @@ def first_page():
 
     instructions_button = tk.Button(root, text="Click this button to get instructions about the game", font="Times 20", bg=BACKGROUND, fg = TEXTCOLOR, command=instructions)
     instructions_button.pack()
+
+    image = Image.open('apple-png.webp')
+    image = ImageTk.PhotoImage(image)
 
 def play_game():
     clear_screen(root)
