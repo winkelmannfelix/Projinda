@@ -8,6 +8,7 @@ GAME_WIDTH = 900
 GAME_SIZE = 50
 SNAKE_LENGTH = 3
 SNAKE_SPEED = 120
+SNAKE_COLOR = "green"
 
 current_direction = "right"
 
@@ -40,7 +41,7 @@ def first_page():
 def play_game():
     clear_screen(root)
     
-    play_button = tk.Button(root, text="START NOW", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=create_canvas)
+    play_button = tk.Button(root, text="START NOW", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=main)
     play_button.pack()
     return_button = tk.Button(root, text="Return", font="Times 20", bg=BACKGROUND, fg = TEXTCOLOR, command=first_page)
     return_button.pack()
@@ -54,7 +55,7 @@ def instructions():
      
     
     
-def create_canvas():
+def main():
     clear_screen(root)
     canvas.pack()
     create_initial_snake()
@@ -71,7 +72,7 @@ def create_initial_snake():
     
     while counter < SNAKE_LENGTH:
         snake_coordinates.insert(0, [x, y])
-        canvas.create_rectangle(x, y, x+ GAME_SIZE, y + GAME_SIZE, fill = "green")
+        canvas.create_rectangle(x, y, x+ GAME_SIZE, y + GAME_SIZE, fill = SNAKE_COLOR)
         x += GAME_SIZE
         counter += 1
         
@@ -81,13 +82,13 @@ def print_snake():
     for i in snake_coordinates:
         x = i[0]
         y = i[1]
-        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+        canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
 
 
 def move_snake():
     global current_direction
     snake_move(current_direction)
-    root.after(SNAKE_SPEED, move_snake)  # Move the snake every 100 ms
+    root.after(SNAKE_SPEED, move_snake)
   
     
 def snake_move(dir):
@@ -98,7 +99,7 @@ def snake_move(dir):
     if dir == "right":
         if current_direction != "left":
             x += GAME_SIZE
-            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
             snake_coordinates.insert(0, [x, y])
             
             snake_coordinates.pop()
@@ -107,7 +108,7 @@ def snake_move(dir):
     elif dir == "down":
         if current_direction != "up":
             y += GAME_SIZE
-            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
             snake_coordinates.insert(0, [x, y])
             
             snake_coordinates.pop()
@@ -117,7 +118,7 @@ def snake_move(dir):
     elif dir == "up":
         if current_direction != "down":
             y -= GAME_SIZE
-            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
             snake_coordinates.insert(0, [x, y])
             
             snake_coordinates.pop()
@@ -126,7 +127,7 @@ def snake_move(dir):
     elif dir == "left":
         if current_direction != "right":
             x -= GAME_SIZE
-            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = "green")
+            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
             snake_coordinates.insert(0, [x, y])
             
             snake_coordinates.pop()
@@ -144,10 +145,6 @@ root.bind('<Down>', lambda event: snake_move('down'))
 
 
 
-
-def main():
-	first_page()
-
-main()
+first_page()
 
 root.mainloop()
