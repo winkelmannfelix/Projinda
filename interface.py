@@ -52,7 +52,7 @@ def instructions():
 	
 def create_canvas():
     clear_screen(root)
-    canvas = Canvas(root, bg = BACKGROUND, height=900, width=900)
+    canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
     canvas.pack()
     canvas.create_oval(0, 0, 50, 50, fill="red")
     canvas.create_rectangle(850, 0, 900, 50, fill = "green")
