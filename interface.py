@@ -12,6 +12,7 @@ SNAKE_COLOR = "green"
 
 current_direction = "right"
 snake_move_setup = None
+flag_game_over = False
 
 
 root = tk.Tk()
@@ -57,13 +58,14 @@ def instructions():
     
     
 def main():
-    global snake_move_setup
+    global snake_move_setup, flag_game_over
     clear_screen(root)
     canvas.pack()
     if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
     create_initial_snake()
+    flag_game_over = False
     move_snake()
 
 def restart_game():
@@ -72,19 +74,27 @@ def restart_game():
         if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
-
-        current_direction = "right"  
-        clear_screen(root) 
-        canvas.pack()  
-        create_initial_snake() 
-        move_snake()
+        main()
+        #current_direction = "right"  
+        #clear_screen(root) 
+        #canvas.pack()  
+        #create_initial_snake() 
+        #move_snake()
 
 def game_over():
+        global snake_move_setup, flag_game_over
+        flag_game_over = True
+        if snake_move_setup is not None:
+            root.after_cancel(snake_move_setup)
+            snake_move_setup = None
+
         clear_screen(root)
         over_text = tk.Label(root, text="Game Over!", font="Times 32", bg=BACKGROUND, fg=TEXTCOLOR)
         over_text.pack()
         restart_button = tk.Button(root, text="Restart Game", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=restart_game)
         restart_button.pack()
+        main_menu_button = tk.Button(root, text="Return to main menu", font="Times 20", bg="blue", fg=TEXTCOLOR, command=first_page)
+        main_menu_button.pack()
     
  
     
@@ -117,7 +127,9 @@ def move_snake():
   
     
 def snake_move(dir):
-    global current_direction
+    global current_direction, snake_move_setup, flag_game_over
+    if flag_game_over:
+         return
     x = snake_coordinates[0][0]
     y = snake_coordinates[0][1]
 
