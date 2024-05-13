@@ -58,7 +58,8 @@ def instructions():
     
     
 def main():
-    global snake_move_setup, flag_game_over
+    global snake_move_setup, flag_game_over, current_direction
+    current_direction  = "right"
     clear_screen(root)
     canvas.pack()
     if snake_move_setup is not None:
