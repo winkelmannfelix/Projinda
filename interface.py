@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+import random
 
 BACKGROUND = "black"
 TEXTCOLOR = "white"
@@ -9,10 +10,12 @@ GAME_SIZE = 50
 SNAKE_LENGTH = 3
 SNAKE_SPEED = 120
 SNAKE_COLOR = "green"
+APPLE_COLOR = "red"
 
 current_direction = "right"
 snake_move_setup = None
 flag_game_over = False
+apple_position = []
 
 
 root = tk.Tk()
@@ -22,6 +25,16 @@ root.configure(bg=BACKGROUND)
 
 canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
 canvas.pack()
+
+def generate_apple():
+    global apple_position
+    while True:
+        x = random.randint(0, (GAME_WIDTH // GAME_SIZE) - 1) * GAME_SIZE
+        y = random.randint(0, (GAME_HEIGHT // GAME_SIZE) - 1) * GAME_SIZE
+        apple_position = [x, y]
+        if apple_position not in snake_coordinates:
+            break
+     
 
 def clear_screen(container):
     for widget in container.pack_slaves():
@@ -66,6 +79,7 @@ def main():
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
     create_initial_snake()
+    generate_apple()
     flag_game_over = False
     move_snake()
 
@@ -115,6 +129,7 @@ def create_initial_snake():
         
 def print_snake():
     canvas.delete("all")
+    canvas.create_rectangle(apple_position[0], apple_position[1], apple_position[0] + GAME_SIZE, apple_position[1] + GAME_SIZE, fill=APPLE_COLOR)
     for i in snake_coordinates:
         x = i[0]
         y = i[1]
