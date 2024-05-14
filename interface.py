@@ -149,26 +149,35 @@ def snake_move(dir):
     x = snake_coordinates[0][0]
     y = snake_coordinates[0][1]
 
-    if dir == "right":
-        if current_direction != "left":
-            x += GAME_SIZE   
-            current_direction = "right"
+    if dir == "right" and current_direction != "left":
+        x += GAME_SIZE
+        current_direction = "right"
         
-    elif dir == "down":
-        if current_direction != "up":
+    elif dir == "down" and current_direction != "up":
+        y += GAME_SIZE
+        current_direction = "down"
+        
+    elif dir == "up" and current_direction != "down":
+        y -= GAME_SIZE
+        current_direction = "up"
+        
+    elif dir == "left" and current_direction != "right":
+        x -= GAME_SIZE
+        current_direction = "left"
+        
+    else:
+        if current_direction == "right":
+            x += GAME_SIZE
+            
+        elif current_direction == "down":
             y += GAME_SIZE
-            current_direction = "down"
-        
-        
-    elif dir == "up":
-        if current_direction != "down":
-            y -= GAME_SIZE    
-            current_direction = "up"
-        
-    elif dir == "left":
-        if current_direction != "right":
+            
+        elif current_direction == "up":
+            y -= GAME_SIZE
+            
+        elif current_direction == "left":
             x -= GAME_SIZE
-            current_direction = "left"
+     
 
     if x < 0 or x >= GAME_WIDTH or y < 0 or y >= GAME_HEIGHT:
         game_over()
