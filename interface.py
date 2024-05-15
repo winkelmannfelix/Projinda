@@ -10,6 +10,7 @@ GAME_SIZE = 50
 SNAKE_LENGTH = 3
 SNAKE_SPEED = 120
 SNAKE_COLOR = "green"
+SNAKE2_COLOR = "pink"
 APPLE_COLOR = "red"
 
 current_direction = "right"
@@ -34,7 +35,11 @@ def generate_apple():
         apple_position = [x, y]
         if apple_position not in snake_coordinates:
             break
-     
+        
+def eat_apple():
+    canvas.delete("all")
+    generate_apple()
+
 
 def clear_screen(container):
     for widget in container.pack_slaves():
@@ -56,8 +61,12 @@ def first_page():
 def play_game():
     clear_screen(root)
     
-    play_button = tk.Button(root, text="START NOW", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=main)
+    play_button = tk.Button(root, text="START NOW", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=lambda: main("singleplayer"))
     play_button.pack()
+    
+    play_button = tk.Button(root, text="START NOW multiplayer", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=lambda: main("multiplayer"))
+    play_button.pack()
+    
     return_button = tk.Button(root, text="Return", font="Times 20", bg=BACKGROUND, fg = TEXTCOLOR, command=first_page)
     return_button.pack()
     
@@ -70,9 +79,13 @@ def instructions():
      
     
     
-def main():
-    global snake_move_setup, flag_game_over, current_direction
+def main(gametype):
+    global snake_move_setup, flag_game_over, current_direction, current2_direction, theGametype, snake1_points, snake2_points
+    theGametype = gametype
     current_direction  = "right"
+    current2_direction = "right"
+    snake1_points = 0
+    snake2_points = 0
     clear_screen(root)
     canvas.pack()
     if snake_move_setup is not None:
@@ -89,7 +102,7 @@ def restart_game():
         if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
-        main()
+        main(theGametype)
         #current_direction = "right"  
         #clear_screen(root) 
         #canvas.pack()  
@@ -114,16 +127,23 @@ def game_over():
  
     
 def create_initial_snake():
-    global snake_coordinates
+    global snake_coordinates, snake2_coordinates
     snake_coordinates = []
+    snake2_coordinates = []
     counter = 0
     x = 0
+    y2 = 50
     y = (GAME_HEIGHT/2)
     
     while counter < SNAKE_LENGTH:
         snake_coordinates.insert(0, [x, y])
         canvas.create_rectangle(x, y, x+ GAME_SIZE, y + GAME_SIZE, fill = SNAKE_COLOR)
+        
+        if theGametype == "multiplayer":
+            snake2_coordinates.insert(0, [x, y2])
+            canvas.create_rectangle(x, y2, x+ GAME_SIZE, y2 + GAME_SIZE, fill = SNAKE2_COLOR)
         x += GAME_SIZE
+        
         counter += 1
         
         
@@ -134,48 +154,61 @@ def print_snake():
         x = i[0]
         y = i[1]
         canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
+    if snake2_coordinates:
+        for i in snake2_coordinates:
+            x = i[0]
+            y = i[1]
+            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE2_COLOR)
 
 
 def move_snake():
-    global current_direction, snake_move_setup
-    snake_move(current_direction)
+    global current_direction, current2_direction, snake_move_setup
+    snake_move(current_direction, snake_coordinates)
+    if snake2_coordinates:
+        snake_move(current2_direction, snake2_coordinates)
     snake_move_setup = root.after(SNAKE_SPEED, move_snake)
   
     
-def snake_move(dir):
-    global current_direction, snake_move_setup, flag_game_over
+def snake_move(dir, coordinates):
+    global current_direction, current2_direction, snake_move_setup, flag_game_over, snake1_points, snake2_points
     if flag_game_over:
          return
-    x = snake_coordinates[0][0]
-    y = snake_coordinates[0][1]
+    x = coordinates[0][0]
+    y = coordinates[0][1]
+    
+    if coordinates == snake2_coordinates:
+        direction = current2_direction
+    else:
+        direction = current_direction
+        
 
-    if dir == "right" and current_direction != "left":
+    if dir == "right" and direction != "left":
         x += GAME_SIZE
-        current_direction = "right"
+        direction = "right"
         
-    elif dir == "down" and current_direction != "up":
+    elif dir == "down" and direction != "up":
         y += GAME_SIZE
-        current_direction = "down"
+        direction = "down"
         
-    elif dir == "up" and current_direction != "down":
+    elif dir == "up" and direction != "down":
         y -= GAME_SIZE
-        current_direction = "up"
+        direction = "up"
         
-    elif dir == "left" and current_direction != "right":
+    elif dir == "left" and direction != "right":
         x -= GAME_SIZE
-        current_direction = "left"
+        direction = "left"
         
     else:
-        if current_direction == "right":
+        if direction == "right":
             x += GAME_SIZE
             
-        elif current_direction == "down":
+        elif direction == "down":
             y += GAME_SIZE
             
-        elif current_direction == "up":
+        elif direction == "up":
             y -= GAME_SIZE
             
-        elif current_direction == "left":
+        elif direction == "left":
             x -= GAME_SIZE
      
 
@@ -183,18 +216,46 @@ def snake_move(dir):
         game_over()
         return
     
+    if any(coordinate == [x, y] for coordinate in snake2_coordinates) or any(point == [x, y] for point in snake_coordinates):
+        game_over()
+
+    
+    if x == apple_position[0] and y == apple_position[1]:
+        eat_apple()
+        coordinates.insert(0, [x, y])
+        if coordinates == snake2_coordinates:
+            snake2_points += 1
+        else:
+            snake1_points += 1
+        print(f"snake 1 has {snake1_points}")
+
+        print(f"snake 2 has {snake2_points}")
+        print("\n")
+
+        
+    
+    if coordinates == snake2_coordinates:
+        current2_direction = direction
+    else:
+        current_direction = direction
+    
     canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
-    snake_coordinates.insert(0, [x, y])
-    snake_coordinates.pop()
+    coordinates.insert(0, [x, y])
+    coordinates.pop()
     print_snake()
 
 
 
+root.bind('<Right>', lambda event: snake_move('right', snake_coordinates))
+root.bind('<Left>', lambda event: snake_move('left', snake_coordinates))
+root.bind('<Up>', lambda event: snake_move('up', snake_coordinates))
+root.bind('<Down>', lambda event: snake_move('down', snake_coordinates))
 
-root.bind('<Right>', lambda event: snake_move('right'))
-root.bind('<Left>', lambda event: snake_move('left'))
-root.bind('<Up>', lambda event: snake_move('up'))
-root.bind('<Down>', lambda event: snake_move('down'))
+root.bind('<d>', lambda event: snake_move('right', snake2_coordinates))
+root.bind('<a>', lambda event: snake_move('left', snake2_coordinates))
+root.bind('<w>', lambda event: snake_move('up', snake2_coordinates))
+root.bind('<s>', lambda event: snake_move('down', snake2_coordinates))
+
 
 
 
