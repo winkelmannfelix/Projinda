@@ -13,11 +13,13 @@ SNAKE_SPEED = 120
 SNAKE_COLOR = "green"
 SNAKE2_COLOR = "pink"
 APPLE_COLOR = "red"
+OBSTACLE_COLOR = "grey"
 
 current_direction = "right"
 snake_move_setup = None
 flag_game_over = False
 apple_position = []
+obstacle_coordinates = []
 
 
 root = tk.Tk()
@@ -39,12 +41,26 @@ def generate_apple():
         y = random.randint(0, (GAME_HEIGHT // GAME_SIZE) - 1) * GAME_SIZE
         apple_position = [x, y]
         if apple_position not in snake_coordinates:
-            break
-              
+            if apple_position not in snake2_coordinates:
+                if apple_position not in obstacle_coordinates:
+                    break
+        
+                   
 def eat_apple():
-    canvas.delete("all")
+    canvas.delete("apple")
     generate_apple()
 
+
+def create_obstacles():
+    global obstacle_coordinates
+    obstacle_coordinates = [[100, 650], [100+GAME_SIZE, 650], [100, 650+GAME_SIZE], [100+GAME_SIZE, 650+GAME_SIZE]
+                            , [100, 50], [100+GAME_SIZE, 50], [100+GAME_SIZE*2, 50], [100+GAME_SIZE*3, 50], [100+GAME_SIZE*4, 50],
+                            [500, 150], [500+ GAME_SIZE, 150], [500+ GAME_SIZE*2, 150], [500+ GAME_SIZE*3, 150], [500+ GAME_SIZE*3, 150], [500+ GAME_SIZE*4, 150], [500+ GAME_SIZE*5, 150],
+                            [500, 250], [500+ GAME_SIZE, 250], [500+ GAME_SIZE*2, 250], [500+ GAME_SIZE*3, 250], [500+ GAME_SIZE*3, 250], [500+ GAME_SIZE*3, 300],
+                            [500+GAME_SIZE*5, 200], [500+GAME_SIZE*5, 200+GAME_SIZE], [500+GAME_SIZE*5, 200+GAME_SIZE*2],
+                            [550, 800], [600, 750], [650, 700], [700, 650], [750, 600]]
+    
+        
 
 def clear_screen(container):
     for widget in container.pack_slaves():
@@ -72,6 +88,9 @@ def play_game():
     play_button = tk.Button(root, text="START NOW multiplayer", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=lambda: main("multiplayer"))
     play_button.pack()
     
+    play_button = tk.Button(root, text="START NOW with obstacles", font="Times 32", bg=BACKGROUND, fg = TEXTCOLOR, command=lambda: main("obstacles"))
+    play_button.pack()
+    
     return_button = tk.Button(root, text="Return", font="Times 20", bg=BACKGROUND, fg = TEXTCOLOR, command=first_page)
     return_button.pack()
     
@@ -91,6 +110,8 @@ def main(gametype):
     current2_direction = "right"
     snake1_points = 0
     snake2_points = 0
+    if theGametype ==  "obstacles":
+        create_obstacles()
     clear_screen(root)
     canvas.pack()
     if snake_move_setup is not None:
@@ -155,7 +176,13 @@ def create_initial_snake():
 def print_snake():
     canvas.delete("all")
     # canvas.create_rectangle(apple_position[0], apple_position[1], apple_position[0] + GAME_SIZE, apple_position[1] + GAME_SIZE, fill=APPLE_COLOR)
-    canvas.create_image(apple_position[0], apple_position[1], image=apple_image, anchor="nw", tags="apple")  # Draw the apple image
+    canvas.create_image(apple_position[0], apple_position[1], image=apple_image, anchor="nw", tags="apple") 
+    
+    if theGametype == "obstacles":
+        for i in obstacle_coordinates:
+            x = i[0]
+            y = i[1]
+            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = OBSTACLE_COLOR)
 
     for i in snake_coordinates:
         x = i[0]
@@ -225,6 +252,9 @@ def snake_move(dir, coordinates):
         return
     
     if any(coordinate == [x, y] for coordinate in snake2_coordinates) or any(point == [x, y] for point in snake_coordinates):
+        game_over()
+        
+    if any(coordinate == [x, y] for coordinate in obstacle_coordinates):
         game_over()
 
     
