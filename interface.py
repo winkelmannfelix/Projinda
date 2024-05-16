@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 import random
+from PIL import ImageTk, Image
 
 BACKGROUND = "black"
 TEXTCOLOR = "white"
@@ -27,6 +28,10 @@ root.configure(bg=BACKGROUND)
 canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
 canvas.pack()
 
+apple_image = Image.open("apple.png") 
+apple_image = apple_image.resize((GAME_SIZE, GAME_SIZE), Image.LANCZOS) 
+apple_image = ImageTk.PhotoImage(apple_image)
+
 def generate_apple():
     global apple_position
     while True:
@@ -35,7 +40,7 @@ def generate_apple():
         apple_position = [x, y]
         if apple_position not in snake_coordinates:
             break
-        
+              
 def eat_apple():
     canvas.delete("all")
     generate_apple()
@@ -149,11 +154,14 @@ def create_initial_snake():
         
 def print_snake():
     canvas.delete("all")
-    canvas.create_rectangle(apple_position[0], apple_position[1], apple_position[0] + GAME_SIZE, apple_position[1] + GAME_SIZE, fill=APPLE_COLOR)
+    # canvas.create_rectangle(apple_position[0], apple_position[1], apple_position[0] + GAME_SIZE, apple_position[1] + GAME_SIZE, fill=APPLE_COLOR)
+    canvas.create_image(apple_position[0], apple_position[1], image=apple_image, anchor="nw", tags="apple")  # Draw the apple image
+
     for i in snake_coordinates:
         x = i[0]
         y = i[1]
         canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = SNAKE_COLOR)
+        
     if snake2_coordinates:
         for i in snake2_coordinates:
             x = i[0]
