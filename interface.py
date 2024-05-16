@@ -34,6 +34,10 @@ apple_image = Image.open("apple.png")
 apple_image = apple_image.resize((GAME_SIZE, GAME_SIZE), Image.LANCZOS) 
 apple_image = ImageTk.PhotoImage(apple_image)
 
+obstacle_image = Image.open("obstacle.png") 
+obstacle_image = obstacle_image.resize((GAME_SIZE, GAME_SIZE), Image.LANCZOS) 
+obstacle_image = ImageTk.PhotoImage(obstacle_image)
+
 def generate_apple():
     global apple_position
     while True:
@@ -182,7 +186,9 @@ def print_snake():
         for i in obstacle_coordinates:
             x = i[0]
             y = i[1]
-            canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = OBSTACLE_COLOR)
+            # canvas.create_rectangle(x, y, x+GAME_SIZE, y+GAME_SIZE, fill = OBSTACLE_COLOR)
+            canvas.create_image(x, y, image=obstacle_image, anchor="nw") 
+
 
     for i in snake_coordinates:
         x = i[0]
@@ -293,6 +299,8 @@ root.bind('<d>', lambda event: snake_move('right', snake2_coordinates))
 root.bind('<a>', lambda event: snake_move('left', snake2_coordinates))
 root.bind('<w>', lambda event: snake_move('up', snake2_coordinates))
 root.bind('<s>', lambda event: snake_move('down', snake2_coordinates))
+
+root.bind('<r>', lambda event: restart_game())
 
 
 
