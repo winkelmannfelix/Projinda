@@ -34,7 +34,6 @@ canvas.pack()
 snake1_score_label = tk.Label(scoreboard_frame, text="Snake 1 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
 snake2_score_label = tk.Label(scoreboard_frame, text="Snake 2 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
 snake1_score_label.pack(side=LEFT, padx=10)
-snake2_score_label.pack(side=RIGHT, padx=10)
 
 def generate_apple():
     global apple_position
@@ -101,6 +100,9 @@ def main(gametype):
     snake1_score_label.config(text="Snake 1 Score: 0")  
     if theGametype == "multiplayer":
         snake2_score_label.config(text="Snake 2 Score: 0")
+        snake2_score_label.pack(side=RIGHT, padx=10)
+    else:
+        snake2_score_label.pack_forget()
     if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
@@ -116,6 +118,8 @@ def restart_game():
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
         scoreboard_frame.pack(fill=X)
+        if theGametype == "singleplayer":
+            snake2_score_label.pack_forget()
         main(theGametype)
         #current_direction = "right"  
         #clear_screen(root) 
@@ -136,6 +140,7 @@ def game_over():
         over_text.pack()
         score_text_one = tk.Label(root, text=f"Final Score:\nSnake 1: {snake1_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
         score_text_one.pack()
+        winner = None
         if theGametype == "multiplayer":
             score_text_two = tk.Label(root, text=f"Snake 2: {snake2_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
             score_text_two.pack()
@@ -145,7 +150,8 @@ def game_over():
                 winner = tk.Label(root, text="Snake 2 wins, you're very cool!", font="Times 24", bg=BACKGROUND, fg=TEXTCOLOR)
             else:
                 winner = tk.Label(root, text="It's a Tie!", font="Times 24", bg=BACKGROUND, fg=TEXTCOLOR)
-        winner.pack()
+        if winner:        
+            winner.pack()
         restart_button = tk.Button(root, text="Restart Game", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=restart_game)
         restart_button.pack()
         main_menu_button = tk.Button(root, text="Return to main menu", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=first_page)
