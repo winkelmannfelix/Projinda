@@ -27,6 +27,9 @@ root.configure(bg=BACKGROUND)
 canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
 canvas.pack()
 
+snake1_score_label = tk.Label(root, text="Snake 1 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+snake2_score_label = tk.Label(root, text="Snake 2 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+
 def generate_apple():
     global apple_position
     while True:
@@ -88,6 +91,9 @@ def main(gametype):
     snake2_points = 0
     clear_screen(root)
     canvas.pack()
+    snake1_score_label.pack()
+    if theGametype == "multiplayer":
+        snake2_score_label.pack()
     if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
@@ -119,9 +125,14 @@ def game_over():
         clear_screen(root)
         over_text = tk.Label(root, text="Game Over!", font="Times 32", bg=BACKGROUND, fg=TEXTCOLOR)
         over_text.pack()
+        score_text_one = tk.Label(root, text=f"Final Score:\nSnake 1: {snake1_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+        score_text_one.pack()
+        if theGametype == "multiplayer":
+            score_text_two = tk.Label(root, text=f"Snake 2: {snake2_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+            score_text_two.pack()
         restart_button = tk.Button(root, text="Restart Game", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=restart_game)
         restart_button.pack()
-        main_menu_button = tk.Button(root, text="Return to main menu", font="Times 20", bg="blue", fg=TEXTCOLOR, command=first_page)
+        main_menu_button = tk.Button(root, text="Return to main menu", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=first_page)
         main_menu_button.pack()
     
  
@@ -225,13 +236,10 @@ def snake_move(dir, coordinates):
         coordinates.insert(0, [x, y])
         if coordinates == snake2_coordinates:
             snake2_points += 1
+            snake2_score_label.config(text=f"Snake 2 Score: {snake2_points}")
         else:
             snake1_points += 1
-        print(f"snake 1 has {snake1_points}")
-
-        if theGametype == "multiplayer":
-            print(f"snake 2 has {snake2_points}")
-        print("\n")
+            snake1_score_label.config(text=f"Snake 1 Score: {snake1_points}")
 
         
     
