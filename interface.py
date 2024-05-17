@@ -172,6 +172,7 @@ def game_over():
         over_text.pack()
         score_text_one = tk.Label(root, text=f"Final Score:\nSnake 1: {snake1_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
         score_text_one.pack()
+        obstacle_coordinates.clear()
         winner = None
         if theGametype == "multiplayer":
             score_text_two = tk.Label(root, text=f"Snake 2: {snake2_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
