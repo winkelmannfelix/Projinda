@@ -91,9 +91,11 @@ def main(gametype):
     snake2_points = 0
     clear_screen(root)
     canvas.pack()
-    snake1_score_label.pack()
+    snake1_score_label.config(text="Snake 1 Score: 0")
+    snake2_score_label.config(text="Snake 2 Score: 0")
+    snake1_score_label.place(x=10, y=10)
     if theGametype == "multiplayer":
-        snake2_score_label.pack()
+        snake2_score_label.place(x=600, y=10)
     if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
@@ -121,6 +123,9 @@ def game_over():
         if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
+
+        snake1_score_label.place_forget()
+        snake2_score_label.place_forget()
 
         clear_screen(root)
         over_text = tk.Label(root, text="Game Over!", font="Times 32", bg=BACKGROUND, fg=TEXTCOLOR)
