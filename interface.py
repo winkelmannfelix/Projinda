@@ -229,7 +229,8 @@ def snake_move(dir, coordinates):
             snake1_points += 1
         print(f"snake 1 has {snake1_points}")
 
-        print(f"snake 2 has {snake2_points}")
+        if theGametype == "multiplayer":
+            print(f"snake 2 has {snake2_points}")
         print("\n")
 
         
