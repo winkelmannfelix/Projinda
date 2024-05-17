@@ -139,6 +139,13 @@ def game_over():
         if theGametype == "multiplayer":
             score_text_two = tk.Label(root, text=f"Snake 2: {snake2_points} points", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
             score_text_two.pack()
+            if snake1_points > snake2_points:
+                winner = tk.Label(root, text="Snake 1 wins, you rock!", font="Times 24", bg=BACKGROUND, fg=TEXTCOLOR)
+            elif snake2_points > snake1_points:
+                winner = tk.Label(root, text="Snake 2 wins, you're very cool!", font="Times 24", bg=BACKGROUND, fg=TEXTCOLOR)
+            else:
+                winner = tk.Label(root, text="It's a Tie!", font="Times 24", bg=BACKGROUND, fg=TEXTCOLOR)
+        winner.pack()
         restart_button = tk.Button(root, text="Restart Game", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=restart_game)
         restart_button.pack()
         main_menu_button = tk.Button(root, text="Return to main menu", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR, command=first_page)
