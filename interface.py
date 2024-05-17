@@ -7,6 +7,7 @@ TEXTCOLOR = "white"
 GAME_HEIGHT = 900
 GAME_WIDTH = 900
 GAME_SIZE = 50
+SCOREBOARD_HEIGHT = 50
 SNAKE_LENGTH = 3
 SNAKE_SPEED = 120
 SNAKE_COLOR = "green"
@@ -24,11 +25,16 @@ root.title("Snake Game")
 root.geometry(f"{GAME_HEIGHT}x{GAME_WIDTH}")
 root.configure(bg=BACKGROUND)
 
+scoreboard_frame = tk.Frame(root, bg=BACKGROUND, height=SCOREBOARD_HEIGHT)
+scoreboard_frame.pack(fill=X)
+
 canvas = Canvas(root, bg = BACKGROUND, height=GAME_HEIGHT, width=GAME_WIDTH)
 canvas.pack()
 
-snake1_score_label = tk.Label(root, text="Snake 1 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
-snake2_score_label = tk.Label(root, text="Snake 2 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+snake1_score_label = tk.Label(scoreboard_frame, text="Snake 1 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+snake2_score_label = tk.Label(scoreboard_frame, text="Snake 2 Score: 0", font="Times 20", bg=BACKGROUND, fg=TEXTCOLOR)
+snake1_score_label.pack(side=LEFT, padx=10)
+snake2_score_label.pack(side=RIGHT, padx=10)
 
 def generate_apple():
     global apple_position
@@ -90,12 +96,11 @@ def main(gametype):
     snake1_points = 0
     snake2_points = 0
     clear_screen(root)
+    scoreboard_frame.pack(fill=X)
     canvas.pack()
-    snake1_score_label.config(text="Snake 1 Score: 0")
-    snake2_score_label.config(text="Snake 2 Score: 0")
-    snake1_score_label.place(x=10, y=10)
+    snake1_score_label.config(text="Snake 1 Score: 0")  
     if theGametype == "multiplayer":
-        snake2_score_label.place(x=600, y=10)
+        snake2_score_label.config(text="Snake 2 Score: 0")
     if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
@@ -110,6 +115,7 @@ def restart_game():
         if snake_move_setup is not None:
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
+        scoreboard_frame.pack(fill=X)
         main(theGametype)
         #current_direction = "right"  
         #clear_screen(root) 
@@ -124,9 +130,7 @@ def game_over():
             root.after_cancel(snake_move_setup)
             snake_move_setup = None
 
-        snake1_score_label.place_forget()
-        snake2_score_label.place_forget()
-
+        scoreboard_frame.pack_forget()
         clear_screen(root)
         over_text = tk.Label(root, text="Game Over!", font="Times 32", bg=BACKGROUND, fg=TEXTCOLOR)
         over_text.pack()
